@@ -4,7 +4,10 @@ import Layout from '../layout/Layout.astro';
 <section>
     <h2>Motivation Scale</h2>
     <p>
-        Please rate your motivation on the following scale.
+        This is the ACADEMIC MOTIVATION SCALE (AMS-C 28) developed by Richard et al. (2005). It is based on a 7-point Likert scale.
+    </p>
+    <p>
+        Please rate your agreement with each statement on a scale from 1 (strongly disagree) to 7 (strongly agree).
     </p>
     <form>
         <div class="question-card">
@@ -935,6 +938,9 @@ import Layout from '../layout/Layout.astro';
         <button type="button" data-step="1">Back: Demographic Information</button>
         <button type="button" data-validate-step="3">Next: GenAI Usage</button>
     </form>
+    <footer>
+        <p>&copy; 2024 Academic Motivation Scale Survey</p>
+    </footer>
 </section>
 
 <script>
@@ -1042,8 +1048,9 @@ import Layout from '../layout/Layout.astro';
     }
 
     .likert-scale input[type="radio"] {
-        margin: 0;
-        padding: 0;
+        scale: 1.2;
+        margin: 1px;
+        padding: 1px;
         width: auto;
         background-color: transparent;
         gap: 4px;
