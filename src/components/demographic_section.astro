@@ -1,0 +1,77 @@
+<section>
+    <h2>Demographic Information</h2>
+    <p>
+        Please provide your demographic information below.
+    </p>
+    <form>
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
+
+        <label for="education">Education Level:</label>
+        <select id="education" name="education" required>
+            <option value="none">None</option>
+            <option value="middle-school">Middle School</option>
+            <option value="high-school">High School</option>
+            <option value="some-college">Some College</option>
+            <option value="associates">Associate's Degree</option>
+            <option value="bachelor">Bachelor's Degree</option>
+            <option value="master">Master's Degree</option>
+            <option value="doctorate">Doctorate</option>
+        </select>
+
+        <button type="button" data-step="2">Next: Motivation Scale</button>
+    </form>
+</section>
+
+<style>
+    section {
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        color: #988558;
+    }
+    p {
+        color: #666;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+        font-weight: bold;
+    }
+    input, select {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        width: 200px;
+        display: block;
+        margin-bottom: 5px;
+        background-color: #f5f5dc;
+    }
+    button {
+        align-self: center;
+        display: block;
+        margin: 0 auto;
+        padding: 10px 20px;
+        background-color: #f5f5dc;
+        color: #333;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #e0e0d1;
+    }
+</style>

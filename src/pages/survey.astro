@@ -1,0 +1,81 @@
+---
+import Layout from '../layout/Layout.astro';
+import DemographicSection from '../components/demographic_section.astro';
+import MotivationScaleSection from '../components/motivation-scale_section.astro';
+import GenAIUsageSection from '../components/genai-usage_section.astro';
+---
+<Layout>
+    <h1>Survey</h1>
+    <p>
+        Welcome to the survey page. Please complete the survey below.
+    </p>
+    <section id="step1" class="survey-step active">
+        <DemographicSection />
+    </section>
+    <section id="step2" class="survey-step hidden">
+        <MotivationScaleSection />
+    </section>
+    <section id="step3" class="survey-step hidden">
+        <GenAIUsageSection />
+    </section>
+</Layout>
+
+<script>
+    function showStep(step: number) {
+        document.querySelectorAll<HTMLElement>('.survey-step').forEach((section) => {
+            section.classList.remove('active');
+            section.classList.add('hidden');
+        });
+
+        const nextStep = document.getElementById(`step${step}`);
+        if (nextStep) {
+            nextStep.classList.remove('hidden');
+            nextStep.classList.add('active');
+        }
+    }
+
+    document.querySelectorAll('[data-step]').forEach((button) => {
+        button.addEventListener('click', () => {
+            showStep(Number(button.getAttribute('data-step')));
+        });
+    });
+</script>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #fbeeac;
+        margin-bottom: 100px;
+    }
+    h1 {
+        color: #988558;
+        text-align: center;
+    }
+    p {
+        color: #666;
+    }
+    h2 {
+        color: #988558;
+    }
+    button {
+        align-self: center;
+        display: block;
+        margin: 0 auto;
+        padding: 10px 20px;
+        background-color: #f5f5dc;
+        color: #333;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #e0e0d1;
+    }
+
+    .survey-step.hidden {
+        display: none;
+    }
+    .survey-step.active {
+        display: block;
+    }
+</style>

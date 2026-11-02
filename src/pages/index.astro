@@ -1,16 +1,47 @@
 ---
+import Layout from '../layout/Layout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+		<h1>Research Survey</h1>
+		<p>Welcome to the research survey page.</p>
+		<p>This survey is voluntary and anonymous. Your responses will be kept confidential.</p>
+		<p>Please complete the survey at your convenience.</p>
+		<h2>GenAI and a Student's Motivation and Self-Efficacy</h2>
+		<p>This section explores the relationship between generative AI tools and students' motivation and self-efficacy.</p>
+		<p>Participants will be asked questions about their experiences with AI tools, their motivation towards going to school, and their confidence in performing academic tasks.</p>
+		<p>These questions aim to understand if there is a relationship between a student's motivation, self-efficacy, and their use of generative AI tools.</p>
+		<p>Thank you for participating in this survey.</p>
+		<button type="button" onclick="window.location.href='/survey'">Start Survey</button>
+</Layout>
+
+<style>
+	body {
+		font-family: Arial, sans-serif;
+		margin: 20px;
+		background-color: #fbeeac;
+	}
+	h1 {
+		color: #988558;
+		text-align: center;
+	}
+	p {
+		color: #666;
+	}
+	h2 {
+		color: #988558;
+	}
+	button {
+		align-self: center;
+		display: block;
+		margin: 0 auto;
+		padding: 10px 20px;
+		background-color: #f5f5dc;
+		color: #333;
+		border: none;
+		cursor: pointer;
+	}
+	button:hover {
+		background-color: #e0e0d1;
+	}
+</style>

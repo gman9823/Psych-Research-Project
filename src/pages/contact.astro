@@ -1,0 +1,54 @@
+---
+import Layout from '../layout/Layout.astro';
+---
+
+<Layout>
+    <h1>Contact Us</h1>
+    <p>If you have any questions or inquiries, feel free to reach out to us using the form below.</p>
+    <form>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" required></textarea>
+        <button type="submit">Send Message</button>
+    </form>
+</Layout>
+
+<style>
+    h1 {
+        color: #988558;
+        text-align: center;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background-color: #fbeeac;
+    }
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #333;
+    }
+    input, textarea {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #f5f5dc;
+    }
+    button {
+        align-self: center;
+        text-align: center;
+        display: block;
+        padding: 10px 20px;
+        background-color: #f5f5dc;
+        color: #333;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #e0e0d1;
+    }
+</style>
