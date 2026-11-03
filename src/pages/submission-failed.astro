@@ -1,0 +1,15 @@
+---
+import Layout from '../layout/Layout.astro';
+---
+
+<Layout>
+    <main>
+        <h1>Submission Failed</h1>
+        <p>
+            Your responses could not be submitted. Please try again; your answers have not been deleted from this page.
+        </p>
+        <!-- Browser Back returns the participant to their still-filled form,
+             while the survey route itself remains a fresh navigation option. -->
+        <a href="/survey">Return to the survey</a>
+    </main>
+</Layout>

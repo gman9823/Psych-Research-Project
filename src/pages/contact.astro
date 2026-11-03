@@ -5,7 +5,7 @@ import Layout from '../layout/Layout.astro';
 <Layout>
     <h1>Contact Us</h1>
     <p>If you have any questions or inquiries, feel free to reach out to us using the form below.</p>
-    <form>
+    <form id="contact-form">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required />
         <label for="email">Email:</label>
@@ -13,8 +13,42 @@ import Layout from '../layout/Layout.astro';
         <label for="message">Message:</label>
         <textarea id="message" name="message" required></textarea>
         <button type="submit">Send Message</button>
+        <p id="contact-status" role="status"></p>
     </form>
 </Layout>
+
+<script>
+    const form = document.getElementById('contact-form') as HTMLFormElement;
+    const status = document.getElementById('contact-status');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        // FormData maps the visible field names directly to the API contract.
+        const values = new FormData(form);
+
+        const response = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: values.get('name'),
+                email: values.get('email'),
+                message: values.get('message')
+            })
+        });
+
+        if (status) {
+            status.textContent = response.ok
+                ? 'Your message has been sent.'
+                : await response.text();
+        }
+
+        if (response.ok) {
+            // Clear only successful submissions, leaving failed values available
+            // for the participant to correct and resend.
+            form.reset();
+        }
+    });
+</script>
 
 <style>
     h1 {

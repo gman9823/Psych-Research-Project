@@ -5,10 +5,11 @@
     </p>
     <form>
         <label for="age">Age:</label>
-        <input type="number" id="age" name="age" required>
+        <input type="number" id="age" name="age" min="1" max="120" required>
 
         <label for="gender">Gender:</label>
         <select id="gender" name="gender" required>
+            <option value="" selected disabled>Select gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="other">Other</option>
@@ -16,6 +17,7 @@
 
         <label for="education">Education Level:</label>
         <select id="education" name="education" required>
+            <option value="" selected disabled>Select education level</option>
             <option value="none">None</option>
             <option value="middle-school">Middle School</option>
             <option value="high-school">High School</option>
@@ -26,9 +28,39 @@
             <option value="doctorate">Doctorate</option>
         </select>
 
-        <button type="button" data-step="2">Next: Motivation Scale</button>
+        <button type="button" data-validate-step="2">Next: Motivation Scale</button>
     </form>
 </section>
+
+<script>
+    document.querySelectorAll<HTMLButtonElement>('[data-validate-step="2"]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const currentStep = document.getElementById('step1');
+            const nextStep = document.getElementById('step2');
+            const ageInput = document.getElementById('age') as HTMLInputElement;
+            const genderSelect = document.getElementById('gender') as HTMLSelectElement;
+            const educationSelect = document.getElementById('education') as HTMLSelectElement;
+
+            // Age uses native constraints; placeholder select values are checked
+            // explicitly because disabled blank options still have an empty value.
+            if (!ageInput.checkValidity() || !genderSelect.value || !educationSelect.value) {
+                alert('Please answer all questions.');
+                return;
+            }
+            // Only reveal the motivation scale when all demographic fields pass.
+            if (currentStep && nextStep) {
+                currentStep.classList.remove('active');
+                currentStep.classList.add('hidden');
+                nextStep.classList.remove('hidden');
+                nextStep.classList.add('active');
+            }
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
 
 <style>
     section {

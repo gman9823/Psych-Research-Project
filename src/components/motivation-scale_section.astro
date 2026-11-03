@@ -9,6 +9,7 @@ import Layout from '../layout/Layout.astro';
     <p>
         Please rate your agreement with each statement on a scale from 1 (strongly disagree) to 7 (strongly agree).
     </p>
+
     <form>
         <div class="question-card">
             <p class="question-text">1. Because with only a high-school degree I would not find a high-paying job later on.</p>
@@ -944,34 +945,41 @@ import Layout from '../layout/Layout.astro';
 </section>
 
 <script>
-    function validateAndNext() {
-        const currentStep = document.getElementById('step2');
-        const nextStep = document.getElementById('step3');
-        const radioGroups = currentStep?.querySelectorAll<HTMLInputElement>('input[type="radio"]') ?? [];
+    document.querySelectorAll<HTMLButtonElement>('[data-validate-step="3"]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const currentStep = document.getElementById('step2');
+            const nextStep = document.getElementById('step3');
+            const radioGroups = currentStep?.querySelectorAll<HTMLInputElement>('input[type="radio"]') ?? [];
+            const groupNames = [...new Set(
+                Array.from(radioGroups).map(radio => radio.name)
+            )];
+            const unanswered = groupNames.filter((groupName) => {
+                return !Array.from(radioGroups).some((radio) => (
+                    radio.name === groupName && radio.checked
+                ));
+            });
 
-        const groupNames = [...new Set(Array.from(radioGroups).map(radio => radio.name))];
-
-        for (let groupName of groupNames) {
-            const selected = document.querySelector(`input[name="${groupName}"]:checked`);
-            if (!selected) {
-                alert(`Please answer "${groupName}".`);
+            if (unanswered.length > 0) {
+                alert('Please answer all questions.');
                 return;
             }
-        }
-        // If all questions are answered, proceed to the next step
-            if (currentStep && nextStep) {
-            currentStep.classList.remove('active');
-            currentStep.classList.add('hidden');
-            nextStep.classList.remove('hidden');
-            nextStep.classList.add('active');
-        }
-    }
 
-    document.querySelectorAll<HTMLButtonElement>('[data-validate-step="3"]').forEach((button) => {
-        button.addEventListener('click', validateAndNext);
+            // Keep scale navigation separate from submission: the participant
+            // must finish GenAI and self-efficacy before the final API POST.
+            if (currentStep && nextStep) {
+                currentStep.classList.remove('active');
+                currentStep.classList.add('hidden');
+                nextStep.classList.remove('hidden');
+                nextStep.classList.add('active');
+            }
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            })
+        });
     });
 </script>
-
 <style>
     section {
         margin-bottom: 20px;

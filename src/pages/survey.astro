@@ -3,6 +3,7 @@ import Layout from '../layout/Layout.astro';
 import DemographicSection from '../components/demographic_section.astro';
 import MotivationScaleSection from '../components/motivation-scale_section.astro';
 import GenAIUsageSection from '../components/genai-usage_section.astro';
+import SelfEfficacySection from '../components/self-efficacy_section.astro';
 ---
 <Layout>
     <h1>Survey</h1>
@@ -18,9 +19,14 @@ import GenAIUsageSection from '../components/genai-usage_section.astro';
     <section id="step3" class="survey-step hidden">
         <GenAIUsageSection />
     </section>
+    <section id="step4" class="survey-step hidden">
+        <SelfEfficacySection />
+    </section>
 </Layout>
 
 <script>
+    // This shared navigator handles buttons without section-specific validation.
+    // Scale Next buttons handle their own navigation after their answers pass.
     function showStep(step: number) {
         document.querySelectorAll<HTMLElement>('.survey-step').forEach((section) => {
             section.classList.remove('active');
@@ -34,7 +40,7 @@ import GenAIUsageSection from '../components/genai-usage_section.astro';
         }
     }
 
-    document.querySelectorAll('[data-step]').forEach((button) => {
+    document.querySelectorAll('[data-step]:not([data-validate-step])').forEach((button) => {
         button.addEventListener('click', () => {
             showStep(Number(button.getAttribute('data-step')));
         });

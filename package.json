@@ -9,10 +9,17 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "pearson": "python3 scripts/pearson.py",
+    "pearson-usage-report": "python3 scripts/pearson.py --usage-report",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^11.1.9",
     "astro": "^7.4.5",
-    "astro-tunnel": "^0.1.9"
+    "astro-tunnel": "^0.1.9",
+    "nodemailer": "^10.3.1"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^8.0.2"
   }
 }

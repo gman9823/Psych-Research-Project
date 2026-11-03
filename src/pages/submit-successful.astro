@@ -6,4 +6,52 @@ import Layout from '../layout/Layout.astro';
     <p>
         Thank you for completing the survey. Your responses have been successfully submitted.
     </p>
+    <section id="motivation-result" hidden>
+        <h2>Your Motivation Result</h2>
+        <p>
+            Average motivation score: <strong id="motivation-score"></strong> out of 7
+        </p>
+    </section>
+    <section id="self-efficacy-result" hidden>
+        <h2>Your Self-Efficacy Result</h2>
+        <p>
+            Average self-efficacy score: <strong id="self-efficacy-score"></strong> out of 7
+        </p>
+    </section>
 </Layout>
+
+<script>
+    // Results are calculated locally from values retained during submission,
+    // avoiding sensitive response queries through a separate public API.
+    const storedAnswers = sessionStorage.getItem('researchSurveyAnswers');
+
+    if (storedAnswers) {
+        const answers = JSON.parse(storedAnswers) as Record<string, string>;
+        // Match only motivation keys; the wider numeric regex guards against
+        // accidentally including similarly named demographics or scale variables.
+        const motivationAnswers = Object.entries(answers)
+            .filter(([key]) => /^Question \d+$/.test(key))
+            .map(([, value]) => Number(value))
+            .filter((value) => Number.isFinite(value));
+
+        if (motivationAnswers.length > 0) {
+            const average = motivationAnswers.reduce((sum, value) => sum + value, 0)
+                / motivationAnswers.length;
+
+            document.getElementById('motivation-score')!.textContent = average.toFixed(2);
+            document.getElementById('motivation-result')!.hidden = false;
+        }
+        const selfEfficacyAnswers = Object.entries(answers)
+            .filter(([key]) => /^Self-Efficacy Question \d+$/.test(key))
+            .map(([, value]) => Number(value))
+            .filter((value) => Number.isFinite(value));
+
+        if (selfEfficacyAnswers.length > 0) {
+            const average = selfEfficacyAnswers.reduce((sum, value) => sum + value, 0)
+                / selfEfficacyAnswers.length;
+
+            document.getElementById('self-efficacy-score')!.textContent = average.toFixed(2);
+            document.getElementById('self-efficacy-result')!.hidden = false;
+        }
+    }
+</script>

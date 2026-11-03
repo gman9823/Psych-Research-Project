@@ -4,13 +4,143 @@
         Please describe how you use GenAI.
     </p>
     <form>
-        <label for="genai-usage">GenAI Usage:</label>
-        <textarea id="genai-usage" name="genai-usage" required></textarea>
+        <div class="question-card">
+            <p class="question-text">1. How often do you use Generative AI (e.g. ChatGPT, Claude, Gemini) for your academic studies?</p>
+            <div class="answer">
+                <label>
+                    <input type="radio" name="GenAI Question 1" value="1" />
+                    <span>1</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 1" value="2" />
+                    <span>2</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 1" value="3" />
+                    <span>3</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 1" value="4" />
+                    <span>4</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 1" value="5" />
+                    <span>5</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 1" value="6" />
+                    <span>6</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 1" value="7" />
+                    <span>7</span>
+                </label>
+            </div>
+            <p class="question-text">2. I use GenAI to explain difficult course concepts, theories, or formulas in simpler terms</p>
+            <div class="answer">
+                <label>
+                    <input type="radio" name="GenAI Question 2" value="True" />
+                    <span>True</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 2" value="False" />
+                    <span>False</span>
+                </label>
+            </div>
+            <p class="question-text">3. I use GenAI to act as a practice partner or quize me on material before an exam.</p>
+            <div class="answer">
+                <label>
+                    <input type="radio" name="GenAI Question 3" value="True" />
+                    <span>True</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 3" value="False" />
+                    <span>False</span>
+                </label>
+            </div>
+            <p class="question-text">4. I use GenAI to help outline, structure, or brainstorm ideas for my own original writing.</p>
+            <div class="answer">
+                <label>
+                    <input type="radio" name="GenAI Question 4" value="True" />
+                    <span>True</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 4" value="False" />
+                    <span>False</span>
+                </label>
+            </div>
+            <p class="question-text">5. I use GenAI to generate full paragraphs, sections, or answers for my homework that I then submit with little to no modification.</p>
+            <div class="answer">
+                <label>
+                    <input type="radio" name="GenAI Question 5" value="Always" />
+                    <span>Always</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 5" value="Sometimes" />
+                    <span>Sometimes</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 5" value="Never" />
+                    <span>Never</span>
+                </label>
+            </div>
+            <p class="question-text">6. I use GenAI primarily to save time and finish assignments as quickly as possible rather than to understand the material.</p>
+            <div class="answer">
+                <label>
+                    <input type="radio" name="GenAI Question 6" value="Always" />
+                    <span>Always</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 6" value="Sometimes" />
+                    <span>Sometimes</span>
+                </label>
+                <label>
+                    <input type="radio" name="GenAI Question 6" value="Never" />
+                    <span>Never</span>
+                </label>
+            </div>
+        </div>
+        <button type="button" data-step="2">Previous</button>
+        <button type="button" data-validate-step="4">Next: Self-Efficacy Scale</button>
 
-        <button type="button" data-step="2">Back: Motivation Scale</button>
-        <button type="submit"><a id="submit-link" href="/submit-successful">Submit</a></button>
     </form>
 </section>
+
+<script>
+    document.querySelectorAll<HTMLButtonElement>('[data-validate-step="4"]').forEach((button) => {
+        button.addEventListener('click', async () => {
+            const currentStep = document.getElementById('step3');
+            const radioGroups = currentStep?.querySelectorAll<HTMLInputElement>('input[type="radio"]') ?? [];
+
+            const groupNames = [...new Set(
+                Array.from(radioGroups).map(radio => radio.name)
+            )];
+
+            const unanswered = groupNames.filter((groupName) => (
+                !currentStep?.querySelector(`input[name="${groupName}"]:checked`)
+            ));
+
+            if (unanswered.length > 0) {
+                alert('Please answer all questions.');
+                return;
+            }
+
+            // GenAI is an intermediate scale: validate it here, then let the
+            // final self-efficacy scale collect and submit the complete payload.
+            const nextStep = document.getElementById('step4');
+            if (currentStep && nextStep) {
+                currentStep.classList.remove('active');
+                currentStep.classList.add('hidden');
+                nextStep.classList.remove('hidden');
+                nextStep.classList.add('active');
+            }
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
 
 <style>
     section {
@@ -52,11 +182,64 @@
         cursor: pointer;
     }
 
+    div.question-card {
+        margin-bottom: 20px;
+    }
+
+    p.question-text {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    div.answer {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        /* flex-direction: row; */
+        /* justify-content: flex-start; */
+        /* align-items: flex-start; */
+        gap: 20px;
+        margin-top: 12px;
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 760px;
+        overflow-x: auto;
+    }
+
+    .answer label {
+        display: flex;
+            align-items: flex-start;
+        justify-content: flex-start;
+        font-size: 14px;
+        font-weight: normal;
+        cursor: pointer;
+        gap: 7px;
+    }
+
+    .answer input[type="radio"] {
+        scale: 1.2;
+        margin: 1px;
+        padding: 1px;
+        width: auto;
+        background-color: transparent;
+        gap: 7px;
+    }
+
     a#submit-link {
         color: #333;
         text-decoration: none;
     }
     button:hover {
         background-color: #e0e0d1;
+    }
+
+        @media (max-width: 600px) {
+        div.likert-scale {
+            gap: 2px;
+        }
+
+        .likert-scale label {
+            min-height: 48px;
+            font-size: 12px;
+        }
     }
 </style>
