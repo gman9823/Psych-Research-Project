@@ -47,6 +47,9 @@ export const POST: APIRoute = async ({ request }) => {
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
+        connectionTimeout: 15_000,
+        greetingTimeout: 15_000,
+        socketTimeout: 15_000,
         auth: {
             user: GMAIL_USER,
             pass: GMAIL_APP_PASSWORD
