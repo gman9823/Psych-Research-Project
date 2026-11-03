@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "start": "node ./dist/server/entry.mjs",
     "pearson": "python3 scripts/pearson.py",
     "pearson-usage-report": "python3 scripts/pearson.py --usage-report",
     "astro": "astro"

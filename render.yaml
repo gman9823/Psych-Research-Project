@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: research-survey
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 1000

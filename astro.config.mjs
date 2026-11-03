@@ -8,6 +8,10 @@ import tunnel from 'astro-tunnel';
 export default defineConfig({
   // The survey and contact APIs require runtime server execution with Node.
   output: 'server',
+  server: {
+    host: '0.0.0.0',
+    port: Number(process.env.PORT || 1000)
+  },
   adapter: node({ mode: 'standalone' }),
   integrations: [tunnel({
     acceptCloudflareNotice: true
