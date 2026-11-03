@@ -38,20 +38,25 @@ export const POST: APIRoute = async ({ request }) => {
         }
     }
 
-    insertResponse.run(
-        answers.age,
-        answers.gender,
-        answers.education,
-        answers['Self-Efficacy Question 1'],
-        answers['Self-Efficacy Question 2'],
-        answers['Self-Efficacy Question 3'],
-        answers['Self-Efficacy Question 4'],
-        answers['Self-Efficacy Question 5'],
-        answers['Self-Efficacy Question 6'],
-        answers['Self-Efficacy Question 7'],
-        answers['Self-Efficacy Question 8'],
-        JSON.stringify(answers)
-    );
+    try {
+        await insertResponse([
+            answers.age,
+            answers.gender,
+            answers.education,
+            answers['Self-Efficacy Question 1'],
+            answers['Self-Efficacy Question 2'],
+            answers['Self-Efficacy Question 3'],
+            answers['Self-Efficacy Question 4'],
+            answers['Self-Efficacy Question 5'],
+            answers['Self-Efficacy Question 6'],
+            answers['Self-Efficacy Question 7'],
+            answers['Self-Efficacy Question 8'],
+            JSON.stringify(answers)
+        ]);
+    } catch (error) {
+        console.error('Survey response could not be stored:', error);
+        return new Response('Unable to store the survey response.', { status: 500 });
+    }
 
     return new Response(null, { status: 201 });
 };

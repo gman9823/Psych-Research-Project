@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@astrojs/node": "^11.1.9",
+    "@libsql/client": "^0.18.0",
     "astro": "^7.4.5",
     "astro-tunnel": "^0.1.9",
     "nodemailer": "^10.3.1"

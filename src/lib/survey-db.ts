@@ -1,53 +1,95 @@
 import { mkdirSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import { dirname, resolve } from 'node:path';
+import { createClient } from '@libsql/client';
 
-// Keep the database beside the application so local and deployed runs use a
-// predictable location separate from version-controlled source.
-const databasePath = resolve(process.cwd(), 'data', 'survey.sqlite');
-mkdirSync(dirname(databasePath), { recursive: true });
+const tursoUrl = import.meta.env.TURSO_DATABASE_URL
+    || process.env.TURSO_DATABASE_URL;
+const tursoToken = import.meta.env.TURSO_AUTH_TOKEN
+    || import.meta.env.TURSO_DATABASE_TOKEN
+    || process.env.TURSO_AUTH_TOKEN
+    || process.env.TURSO_DATABASE_TOKEN;
 
-export const database = new DatabaseSync(databasePath);
+export const db = tursoUrl
+    ? createClient({ url: tursoUrl, authToken: tursoToken })
+    : null;
 
-// Store demographics in dedicated columns while keeping the complete
-// questionnaire payload for future analysis and schema changes.
-database.exec(`
-    CREATE TABLE IF NOT EXISTS survey_responses (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        age TEXT NOT NULL,
-        gender TEXT NOT NULL,
-        education TEXT NOT NULL,
-        answers TEXT NOT NULL
-    )
-`);
+let localInsert: ReturnType<DatabaseSync['prepare']> | null = null;
 
-const responseColumns = database.prepare('PRAGMA table_info(survey_responses)').all() as Array<{ name: string }>;
-const columnNames = new Set(responseColumns.map((column) => column.name));
-
-// Existing databases may not yet have the self-efficacy columns, so migrate
-// them in place without replacing or deleting stored responses.
-for (let question = 1; question <= 8; question += 1) {
-    const columnName = `self_efficacy_${question}`;
-    if (!columnNames.has(columnName)) {
-        database.exec(`ALTER TABLE survey_responses ADD COLUMN ${columnName} TEXT`);
-    }
+if (!db) {
+    // Local development retains a durable SQLite file when Turso credentials
+    // are absent; deployed Turso runs never write to ephemeral Render storage.
+    const databasePath = resolve(process.cwd(), 'data', 'survey.sqlite');
+    mkdirSync(dirname(databasePath), { recursive: true });
+    const localDatabase = new DatabaseSync(databasePath);
+    localDatabase.exec(`
+        CREATE TABLE IF NOT EXISTS survey_responses (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            age TEXT NOT NULL,
+            gender TEXT NOT NULL,
+            education TEXT NOT NULL,
+            self_efficacy_1 TEXT,
+            self_efficacy_2 TEXT,
+            self_efficacy_3 TEXT,
+            self_efficacy_4 TEXT,
+            self_efficacy_5 TEXT,
+            self_efficacy_6 TEXT,
+            self_efficacy_7 TEXT,
+            self_efficacy_8 TEXT,
+            answers TEXT NOT NULL
+        )
+    `);
+    localInsert = localDatabase.prepare(`
+        INSERT INTO survey_responses (
+            age, gender, education,
+            self_efficacy_1, self_efficacy_2, self_efficacy_3, self_efficacy_4,
+            self_efficacy_5, self_efficacy_6, self_efficacy_7, self_efficacy_8,
+            answers
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
 }
 
-export const insertResponse = database.prepare(`
-    INSERT INTO survey_responses (
-        age,
-        gender,
-        education,
-        self_efficacy_1,
-        self_efficacy_2,
-        self_efficacy_3,
-        self_efficacy_4,
-        self_efficacy_5,
-        self_efficacy_6,
-        self_efficacy_7,
-        self_efficacy_8,
-        answers
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-`);
+let initializedRemote = false;
+
+async function initializeRemote() {
+    if (!db || initializedRemote) return;
+    await db.executeMultiple(`
+        CREATE TABLE IF NOT EXISTS survey_responses (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            age TEXT NOT NULL,
+            gender TEXT NOT NULL,
+            education TEXT NOT NULL,
+            self_efficacy_1 TEXT,
+            self_efficacy_2 TEXT,
+            self_efficacy_3 TEXT,
+            self_efficacy_4 TEXT,
+            self_efficacy_5 TEXT,
+            self_efficacy_6 TEXT,
+            self_efficacy_7 TEXT,
+            self_efficacy_8 TEXT,
+            answers TEXT NOT NULL
+        );
+    `);
+    initializedRemote = true;
+}
+
+export async function insertResponse(values: string[]) {
+    if (db) {
+        await initializeRemote();
+        await db.execute({
+            sql: `
+                INSERT INTO survey_responses (
+                    age, gender, education,
+                    self_efficacy_1, self_efficacy_2, self_efficacy_3, self_efficacy_4,
+                    self_efficacy_5, self_efficacy_6, self_efficacy_7, self_efficacy_8,
+                    answers
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `,
+            args: values
+        });
+        return;
+    }
+    localInsert?.run(...values);
+}
